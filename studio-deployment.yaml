@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dse-studio
+  labels:
+    app: dse-studio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dse-studio
+  template:
+    metadata:
+      labels:
+        app: dse-studio
+    spec:
+      containers:
+      - name: dse-studio
+        image: datastax/dse-studio
+        env:
+        - name: DS_LICENSE
+          value: accept
+        ports:
+          - name: studio
+            containerPort: 9091
+            protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dse-studio
+spec:
+  type: LoadBalancer
+  selector:
+    app: dse-studio
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: studio        

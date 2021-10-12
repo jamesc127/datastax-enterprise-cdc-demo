@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nosqlbench-cdc-test
+spec:
+  template:
+    # This is the pod template
+    spec:
+      containers:
+      - name: nb
+        image: docker.io/jamesc127/cdc-nosqlbench-test:0.10
+        env:
+        - name: CASS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cdc-test-superuser
+              key: password
+          # value: jCjmBmBVsbs5LMJPF7UD9B9Q_Y4NuSzvjwZqJjz_Y07qNGfQx71KUA
+      restartPolicy: OnFailure

@@ -1,0 +1,15 @@
+bindings:
+  rw_key: <<keydist:Uniform(0,1000000000)->int>>; ToString() -> String
+  rw_value: Hash(); <<valdist:Uniform(0,1000000000)->int>>; ToString() -> String
+
+blocks:
+  - name: main-write
+    tags:
+      phase: main
+    params:
+      cl: <<write_cl:LOCAL_QUORUM>>
+    statements:
+      - main-insert: |
+          insert into <<keyspace:db1>>.<<table:table1>> (key, c1) values ({rw_key}, {rw_value});
+        tags:
+           name: main-insert
