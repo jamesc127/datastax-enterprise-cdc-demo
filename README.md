@@ -1,16 +1,19 @@
 # datastax-enterprise-cdc-demo
 ## Prerequsites
 - gcloud sdk
+    - ensure gcloud is at the latest version
 - kubectl
 - helm
 - awk
+- jq
 - [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
-
+## k8s Cluster
+TODO add info here
 ## gcloud
 Set your `gcloud` instance to whichever project you have acccess to deploy a k8s cluster into. This should be all you need to do to get `kubectl` access to your k8s cluster in GKE.
 ```shell
-gcloud config set project gcp-data-architects-dev
-gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project gcp-data-architects-dev
+gcloud config set project YOUR_PROJECT_NAME
+gcloud container clusters get-credentials YOUR_CLUSTER_NAME --zone YOUR_REGION --project YOUR_PROJECT_NAME
 ```
 ## Add Helm Repos
 ```shell
@@ -55,9 +58,9 @@ helm install pulsar -f pulsar-values-auth-gcp.yaml datastax-pulsar/pulsar
 ```
 ## Run Luna Streaming Config Script
 ```shell
-kubectl cp ./pulsar_configure.sh $(kubectl get pods | grep pulsar-bastion-* | awk '{print $1}'):/pulsar/bin/pulsar_configure.sh
-kubectl exec $(kubectl get pods | grep pulsar-bastion-* | awk '{print $1}') -- chmod +x /pulsar/bin/pulsar_configure.sh
-kubectl exec $(kubectl get pods | grep pulsar-bastion-* | awk '{print $1}') -- bash /pulsar/bin/pulsar_configure.sh $CASSANDRA_PASS
+kubectl cp ./pulsar_configure.sh $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}'):/pulsar/bin/pulsar_configure.sh
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- chmod +x /pulsar/bin/pulsar_configure.sh
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- bash /pulsar/bin/pulsar_configure.sh $CASSANDRA_PASS
 ```
 ## DSE Studio
 ```shell
@@ -75,8 +78,8 @@ kubectl apply -f nb.yaml
 ```
 ## Validate Elasticsearch Entries
 ```shell
-kubectl exec $(kubectl get pods | grep pulsar-bastion-* | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_doc/381691746?pretty"
-kubectl exec $(kubectl get pods | grep pulsar-bastion-* | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_search?pretty&size=0"
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_doc/381691746?pretty"
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_search?pretty&size=0"
 ```
 ## Load NYC Collision Dataset
 TODO set up k8s job to use DSBulk and load csv dataset
