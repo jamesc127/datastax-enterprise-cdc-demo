@@ -26,6 +26,7 @@ helm repo update
 
 ## DataStax Enterprise
 [CDC Smoke Test Repo](https://github.com/riptano/dse-cdc-test)
+TODO add back in the user name get
 ```shell
 helm install -f cass-operator-values.yaml cass-operator datastax/cass-operator
 kubectl apply -f deploy-cassandra.yaml
@@ -50,6 +51,39 @@ helm install metricbeat elastic/metricbeat
 ```shell
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE TABLE IF NOT EXISTS db1.table1 (key text PRIMARY KEY, c1 text) WITH cdc=true;"
+```
+```shell
+kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
+"CREATE TABLE IF NOT EXISTS db1.nyc_collisions (\
+crash_date text,\
+crash_time text,\
+borough text,\
+zip int,\
+latitude double,\
+longitude double,\
+location text,\
+on_street_name text,\
+cross_street_name text,\
+off_street_name text,\
+persons_injured int,\
+persons_killed int,\
+pedestrians_injured int,\
+pedestrians_killed int,\
+cyclist_injured int,\
+cyclist_killed int,\
+motorist_injured int,\
+motorist_killed int,\
+contributing_factor_vehicle_1 text,\
+contributing_factor_vehicle_2 text,\
+contributing_factor_vehicle_3 text,\
+contributing_factor_vehicle_4 text,\
+contributing_factor_vehicle_5 text,\
+collision_id text PRIMARY KEY,\
+vehicle_type_code_1 text,\
+vehicle_type_code_2 text,\
+vehicle_type_code_3 text,\
+vehicle_type_code_4 text,\
+vehicle_type_code_5 text) WITH cdc=true;"
 ```
 ## Luna Streaming
 [Helm Chart](https://docs.datastax.com/en/luna/streaming/2.7/quickstart-helm-installs.html)
