@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dsbulk-load-collision-data
+spec:
+  template:
+    spec:
+      containers:
+      - name: dsbulk
+        image: docker.io/jamesc127/dsbulk-collisions-load:0.1
+        env:
+        - name: CASS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cdc-test-superuser
+              key: password
+        - name: CASS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: cdc-test-superuser
+              key: username
+      restartPolicy: OnFailure
