@@ -106,7 +106,8 @@ TODO can I automatically define a connection, username, and password? Doesn't se
 
 `USERNAME=cdc-test-superuser`
 
-## Run NoSQLBench test
+## Run NoSQLBench Initial Data Load
+This k8s job will load 100 records into `table1`, which will be persisted in DSE and CDC'd to Elasticsearch.
 ```shell
 kubectl apply -f nb.yaml
 ```
@@ -116,7 +117,9 @@ kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') --
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_search?pretty&size=0"
 ```
 ## Load NYC Collision Dataset
-TODO set up k8s job to use DSBulk and load csv dataset
+```shell
+kubectl apply -f dsbulk.yaml
+```
 
 TODO set up a kibana dashboard
 
