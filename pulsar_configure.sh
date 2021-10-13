@@ -38,14 +38,6 @@ pulsar_configure() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP namespaces set-retention public/default --size -1 --time -1
 }
 
-source_list() {
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source list
-}
-
-sink_list() {
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP sink list
-}
-
 # The connector must be deployed when the keyspace exists
 deploy_csc() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
@@ -69,8 +61,26 @@ deploy_csc() {
     }"
 }
 
-csc_status() {
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source status --name cassandra-source-db1-table1
+deploy_csc_nyc() {
+  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
+    --archive  https://github.com/jamesc127/source-pulsar/raw/main/source-pulsar-0.2.2.nar \
+    --tenant public \
+    --namespace default \
+    --name cassandra-source-db1-nyc-collisions \
+    --destination-topic-name data-db1.nyc-collisions \
+    --source-config "{
+      \"keyspace\": \"db1\",
+      \"table\": \"nyc-collisions\",
+      \"events.topic\": \"persistent://public/default/events-db1.nyc-collisions\",
+      \"events.subscription.name\": \"nyc1\",
+      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
+      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
+      \"contactPoints\": \"$CASSANDRA_SERVICE\",
+      \"loadBalancing.localDc\": \"$CASSANDRA_DC\",
+      \"auth.provider\": \"PLAIN\",
+      \"auth.username\": \"$USERNAME\",
+      \"auth.password\": \"$PASSWORD\"
+    }"
 }
 
 deploy_es_sink() {
@@ -90,30 +100,21 @@ deploy_es_sink() {
     }"
 }
 
-es_sink_status() {
-   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP sink status --name elasticsearch-sink-db1-table1
-}
-
-es_refresh() {
-  curl -XPOST "$ELASTICSEARCH_URL/db1.table1/_refresh"
-}
-
-es_total_hits() {
-  TOTAL_HIT=$(curl "$ELASTICSEARCH_URL/db1.table1/_search?pretty&size=0" 2>/dev/null | jq '.hits.total.value')
-  if [ "$TOTAL_HIT" != "${1}" ]; then
-	     echo "### total_hit : unexpected total.hits = $TOTAL_HIT"
-	     return 1
-	fi
-}
-
-run_cqlsh() {
-  cqlsh -u $USERNAME -p $PASSWORD -e "${1}"
-}
-
-cleanup_test() {
-  curl -XDELETE "$ELASTICSEARCH_URL/db1.table1"
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP topics delete -d -f persistent://public/default/events-db1.table1
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP topics delete -d -f persistent://public/default/data-db1.table1
+deploy_es_sink_nyc() {
+  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP sink create \
+    --sink-type elastic_search \
+    --tenant public \
+    --namespace default \
+    --name elasticsearch-sink-db1-nyc-collisions \
+    --inputs persistent://public/default/data-db1.nyc-collisions \
+    --subs-position Earliest \
+    --sink-config "{
+      \"elasticSearchUrl\":\"$ELASTICSEARCH_URL\",
+      \"indexName\":\"db1.nyc-collisions\",
+      \"keyIgnore\":\"false\",
+      \"nullValueAction\":\"DELETE\",
+      \"schemaEnable\":\"true\"
+    }"
 }
 
 test_start
@@ -122,6 +123,10 @@ pulsar_configure
 
 deploy_csc
 
+deploy_csc_nyc
+
 deploy_es_sink
+
+deploy_es_sink_nyc
 
 test_end

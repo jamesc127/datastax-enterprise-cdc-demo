@@ -7,6 +7,8 @@
 - awk
 - jq
 - [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
+## TL;DR
+- This demo takes about 30-40 minutes to deploy on GKE if you're sure your local environment is stable
 ## k8s Cluster
 TODO add info here
 ## gcloud
