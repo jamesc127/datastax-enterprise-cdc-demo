@@ -66,12 +66,12 @@ deploy_csc_nyc() {
     --archive  https://github.com/jamesc127/source-pulsar/raw/main/source-pulsar-0.2.2.nar \
     --tenant public \
     --namespace default \
-    --name cassandra-source-db1-nyc-collisions \
-    --destination-topic-name data-db1.nyc-collisions \
+    --name cassandra-source-db1-nyc_collisions \
+    --destination-topic-name data-db1.nyc_collisions \
     --source-config "{
       \"keyspace\": \"db1\",
       \"table\": \"nyc_collisions\",
-      \"events.topic\": \"persistent://public/default/events-db1.nyc-collisions\",
+      \"events.topic\": \"persistent://public/default/events-db1.nyc_collisions\",
       \"events.subscription.name\": \"nyc1\",
       \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
       \"value.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
@@ -106,11 +106,11 @@ deploy_es_sink_nyc() {
     --tenant public \
     --namespace default \
     --name elasticsearch-sink-db1-nyc-collisions \
-    --inputs persistent://public/default/data-db1.nyc-collisions \
+    --inputs persistent://public/default/data-db1.nyc_collisions \
     --subs-position Earliest \
     --sink-config "{
       \"elasticSearchUrl\":\"$ELASTICSEARCH_URL\",
-      \"indexName\":\"db1.nyc-collisions\",
+      \"indexName\":\"db1.nyc_collisions\",
       \"keyIgnore\":\"false\",
       \"nullValueAction\":\"DELETE\",
       \"schemaEnable\":\"true\"
