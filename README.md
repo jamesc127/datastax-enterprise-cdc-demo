@@ -126,13 +126,14 @@ kubectl apply -f dsbulk.yaml
 TODO set up a kibana dashboard
 ## Validate Elasticsearch Entries
 ```shell
-kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.nyc-collisions/_search?pretty&size=0"
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.nyc_collisions/_search?pretty&size=0"
 ```
 ## Distroy Env
 ```bash
 kubectl delete cassandradatacenter dc1
 helm delete pulsar elasticsearch cass-operator kibana metricbeat
 kubectl delete -f nb.yaml
+kubectl delete -f dsbulk.yaml
 kubectl delete -f studio-deployment.yaml
 kubectl delete -f kibana-loadbalancer.yaml
 ```
