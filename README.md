@@ -32,8 +32,6 @@ TODO add back in the user name get
 ```shell
 helm install -f cass-operator-values.yaml cass-operator datastax/cass-operator
 kubectl apply -f deploy-cassandra.yaml
-CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
-echo $CASSANDRA_PASS
 ```
 ## Elasticsearch
 ```shell
@@ -50,7 +48,10 @@ helm install metricbeat elastic/metricbeat
 ```
 
 ## Create Cassandra Schema
+Ensure that the DataStax Enterprise cluster is fully up and running before proceeding.
 ```shell
+CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
+echo $CASSANDRA_PASS
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE TABLE IF NOT EXISTS db1.table1 (key text PRIMARY KEY, c1 text) WITH cdc=true;"
 ```
@@ -87,6 +88,15 @@ vehicle_type_code_3 text,\
 vehicle_type_code_4 text,\
 vehicle_type_code_5 text) WITH cdc=true;"
 ```
+## DSE Studio
+```shell
+kubectl apply -f studio-deployment.yaml
+```
+TODO can I automatically define a connection, username, and password? Doesn't seem to be a good way to get the username and password into the studio deployment yet.
+
+`CASSANDRA_SERVICE=cdc-test-dc1-service.default.svc.cluster.local`
+
+`USERNAME=cdc-test-superuser`
 ## Luna Streaming
 [Helm Chart](https://docs.datastax.com/en/luna/streaming/2.7/quickstart-helm-installs.html)
 ```shell
@@ -98,16 +108,6 @@ kubectl cp ./pulsar_configure.sh $(kubectl get pods | grep "pulsar-bastion-*" | 
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- chmod +x /pulsar/bin/pulsar_configure.sh
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- bash /pulsar/bin/pulsar_configure.sh $CASSANDRA_PASS
 ```
-## DSE Studio
-```shell
-kubectl apply -f studio-deployment.yaml
-```
-TODO can I automatically define a connection, username, and password? Doesn't seem to be a good way to get the username and password into the studio deployment yet.
-
-`CASSANDRA_SERVICE=cdc-test-dc1-service.default.svc.cluster.local`
-
-`USERNAME=cdc-test-superuser`
-
 ## Run NoSQLBench Initial Data Load
 This k8s job will load 100 records into `table1`, which will be persisted in DSE and CDC'd to Elasticsearch.
 ```shell
@@ -124,7 +124,10 @@ kubectl apply -f dsbulk.yaml
 ```
 
 TODO set up a kibana dashboard
-
+## Validate Elasticsearch Entries
+```shell
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.nyc-collisions/_search?pretty&size=0"
+```
 ## Distroy Env
 ```bash
 kubectl delete cassandradatacenter dc1
