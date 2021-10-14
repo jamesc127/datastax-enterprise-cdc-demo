@@ -70,7 +70,7 @@ deploy_csc_nyc() {
     --destination-topic-name data-db1.nyc-collisions \
     --source-config "{
       \"keyspace\": \"db1\",
-      \"table\": \"nyc-collisions\",
+      \"table\": \"nyc_collisions\",
       \"events.topic\": \"persistent://public/default/events-db1.nyc-collisions\",
       \"events.subscription.name\": \"nyc1\",
       \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
