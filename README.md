@@ -72,7 +72,7 @@ language text,\
 director text,\
 writer text,\
 production_company text,\
-actors frozen<list<string>>,\
+actors frozen<list<text>>,\
 description text,\
 avg_vote float,\
 votes int,\
