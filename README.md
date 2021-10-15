@@ -9,6 +9,8 @@
 - [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
 ## TL;DR
 - This demo takes about 30-40 minutes to deploy on GKE if you're sure your local environment is stable
+## TODO
+- can we do this without metricbeats?
 ## k8s Cluster
 TODO add info here
 ## gcloud
@@ -54,6 +56,32 @@ CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.pa
 echo $CASSANDRA_PASS
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE TABLE IF NOT EXISTS db1.table1 (key text PRIMARY KEY, c1 text) WITH cdc=true;"
+```
+```shell
+kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
+"CREATE TABLE IF NOT EXISTS db1.imdb_movies (\
+imdb_title_id text PRIMARY KEY,\
+title text,\
+original_title text,\
+year int,\
+date_published date,\
+genre text,\
+duration int,\
+country text,\
+language text,\
+director text,\
+writer text,\
+production_company text,\
+actors frozen<list<string>>,\
+description text,\
+avg_vote float,\
+votes int,\
+budget text,\
+usa_gross_income text,\
+worlwide_gross_income text,\
+metascore float,\
+reviews_from_users float,\
+reviews_from_critics float) WITH cdc=true;"
 ```
 ```shell
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
