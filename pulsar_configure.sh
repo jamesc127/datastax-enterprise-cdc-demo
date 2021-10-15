@@ -66,12 +66,12 @@ deploy_csc_nyc() {
     --archive  https://github.com/jamesc127/source-pulsar/raw/main/source-pulsar-0.2.2.nar \
     --tenant public \
     --namespace default \
-    --name cassandra-source-db1-nyc_collisions \
-    --destination-topic-name data-db1.nyc_collisions \
+    --name cassandra-source-db1-imdb_movies \
+    --destination-topic-name data-db1.imdb_movies \
     --source-config "{
       \"keyspace\": \"db1\",
-      \"table\": \"nyc_collisions\",
-      \"events.topic\": \"persistent://public/default/events-db1.nyc_collisions\",
+      \"table\": \"imdb_movies\",
+      \"events.topic\": \"persistent://public/default/events-db1.imdb_movies\",
       \"events.subscription.name\": \"nyc1\",
       \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
       \"value.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
@@ -105,12 +105,12 @@ deploy_es_sink_nyc() {
     --sink-type elastic_search \
     --tenant public \
     --namespace default \
-    --name elasticsearch-sink-db1-nyc-collisions \
-    --inputs persistent://public/default/data-db1.nyc_collisions \
+    --name elasticsearch-sink-db1-imdb_movies \
+    --inputs persistent://public/default/data-db1.imdb_movies \
     --subs-position Earliest \
     --sink-config "{
       \"elasticSearchUrl\":\"$ELASTICSEARCH_URL\",
-      \"indexName\":\"db1.nyc_collisions\",
+      \"indexName\":\"db1.imdb_movies\",
       \"keyIgnore\":\"false\",
       \"nullValueAction\":\"DELETE\",
       \"schemaEnable\":\"true\"
