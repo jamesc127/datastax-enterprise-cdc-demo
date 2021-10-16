@@ -150,7 +150,7 @@ kubectl apply -f dsbulk.yaml
 TODO set up a kibana dashboard
 ## Validate Elasticsearch Entries
 ```shell
-kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.nyc_collisions/_search?pretty&size=0"
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.imdb_movies/_search?pretty&size=0"
 ```
 ## Distroy Env
 ```bash
