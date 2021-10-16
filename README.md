@@ -76,10 +76,6 @@ actors text,\
 description text,\
 avg_vote float,\
 votes int,\
-budget text,\
-usa_gross_income text,\
-worlwide_gross_income text,\
-metascore float,\
 reviews_from_users float,\
 reviews_from_critics float) WITH cdc=true;"
 ```
