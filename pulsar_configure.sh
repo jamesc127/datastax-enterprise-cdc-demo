@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# !/usr/bin/env bash
 
 set -x
 
@@ -41,7 +41,7 @@ pulsar_configure() {
 # The connector must be deployed when the keyspace exists
 deploy_csc() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --archive  https://github.com/jamesc127/source-pulsar/raw/main/source-pulsar-0.2.2.nar \
+    --archive  https://github.com/jamesc127/source-pulsar/raw/main/pulsar-cassandra-source-0.2.7-SNAPSHOT.nar \
     --tenant public \
     --namespace default \
     --name cassandra-source-db1-table1 \
@@ -51,8 +51,8 @@ deploy_csc() {
       \"table\": \"table1\",
       \"events.topic\": \"persistent://public/default/events-db1.table1\",
       \"events.subscription.name\": \"sub1\",
-      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
-      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
+      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
+      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
       \"contactPoints\": \"$CASSANDRA_SERVICE\",
       \"loadBalancing.localDc\": \"$CASSANDRA_DC\",
       \"auth.provider\": \"PLAIN\",
@@ -61,9 +61,9 @@ deploy_csc() {
     }"
 }
 
-deploy_csc_nyc() {
+deploy_csc_movie() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --archive  https://github.com/jamesc127/source-pulsar/raw/main/source-pulsar-0.2.2.nar \
+    --archive  https://github.com/jamesc127/source-pulsar/raw/main/pulsar-cassandra-source-0.2.7-SNAPSHOT.nar \
     --tenant public \
     --namespace default \
     --name cassandra-source-db1-imdb_movies \
@@ -72,9 +72,9 @@ deploy_csc_nyc() {
       \"keyspace\": \"db1\",
       \"table\": \"imdb_movies\",
       \"events.topic\": \"persistent://public/default/events-db1.imdb_movies\",
-      \"events.subscription.name\": \"nyc1\",
-      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
-      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.AvroConverter\",
+      \"events.subscription.name\": \"movies\",
+      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
+      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
       \"contactPoints\": \"$CASSANDRA_SERVICE\",
       \"loadBalancing.localDc\": \"$CASSANDRA_DC\",
       \"auth.provider\": \"PLAIN\",
@@ -117,16 +117,226 @@ deploy_es_sink_nyc() {
     }"
 }
 
+create_es_index_movies() {
+  curl -XPUT $ELASTICSEARCH_URL/db1.imdb_movies/ \
+  -H 'Content-Type: application/json' \
+  -d '
+  {
+  "settings": {
+  "analysis": {
+  "filter": {
+  "autocomplete_filter": {
+  "type": "edge_ngram",
+  "min_gram": 1,
+  "max_gram": 20
+  }
+  },
+  "analyzer": {
+  "autocomplete": {
+  "type": "custom",
+  "tokenizer": "standard",
+  "filter": [
+  "lowercase",
+  "autocomplete_filter"
+  ]
+  }
+  }
+  }
+  },
+  "mappings": {
+  "properties" : {
+
+      "@timestamp" : {
+            "type" : "date"
+          },
+          "@version" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "actors" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "avg_vote" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "budget" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "country" : {
+            "type" : "text",
+            "fields" : {
+            "raw": {
+            "type": "keyword"
+            }
+            }
+          },
+          "description" : {
+            "type" : "text", "analyzer" : "english"
+          },
+          "director" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+         "duration" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "genre" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "host" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "language" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "message" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "path" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "production_company" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "reviews_from_critics" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "reviews_from_users" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "title" : {
+            "type" : "text", "analyzer": "autocomplete"
+          },
+          "votes" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "writer" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "year" : {
+            "type" : "date",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          }
+
+
+
+  }
+  }
+  }
+  }'
+}
+
 test_start
 
 pulsar_configure
 
 deploy_csc
 
-deploy_csc_nyc
+deploy_csc_movie
 
 deploy_es_sink
 
 deploy_es_sink_nyc
+
+create_es_index_movies
 
 test_end

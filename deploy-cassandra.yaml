@@ -14,7 +14,7 @@ metadata:
 spec:
   clusterName: cdc-test
   serverType: dse
-  serverVersion: "6.8.14"
+  serverVersion: "6.8.16"
   serverImage: "vroyer/dse4-server:latest"
   managementApiAuth:
     insecure: {}
@@ -25,7 +25,7 @@ spec:
     - name: rack3
   resources:
     requests:
-      memory: 1Gi
+      memory: 4Gi
       cpu: 1
   storageConfig:
     cassandraDataVolumeClaimSpec:
@@ -34,7 +34,7 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 2Gi
+          storage: 10Gi
   config:
     cassandra-yaml:
       num_tokens: 8
@@ -42,7 +42,6 @@ spec:
       authorizer: com.datastax.bdp.cassandra.auth.DseAuthorizer
       role_manager: com.datastax.bdp.cassandra.auth.DseRoleManager
       cdc_enabled: true
-      commitlog_sync_period_in_ms: 2000
     dse-yaml:
       authorization_options:
         enabled: true
@@ -50,9 +49,9 @@ spec:
         enabled: true
         default_scheme: internal
     jvm-server-options:
-      initial_heap_size: "500m"
-      max_heap_size: "500m"
+      initial_heap_size: "2G"
+      max_heap_size: "2G"
       additional-jvm-opts:
         - "-Ddse.system_distributed_replication_dc_names=dc1"
         - "-Ddse.system_distributed_replication_per_dc=3"
-        - "-javaagent:/producer-dse4-pulsar-0.2.2-all.jar=pulsarServiceUrl=pulsar://pulsar-broker.default.svc.cluster.local:6650,topicPrefix=persistent://public/default/events-,cdcRelocationDir=/var/lib/cassandra/cdc_backup,pulsarAuthPluginClassName=org.apache.pulsar.client.impl.auth.AuthenticationToken,pulsarAuthParams=token:ZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lKaFpHMXBiaUo5Lm0tV3NKaWR6bU9ZTlIzV3lZUERDa1lfaHhfalg5N0trOWMybDNFNUxSMVIybFRLc0ptT0NJZTVmUDM2SE9sU1pRWUlrdVV2R3hhYlBLcGc5MnRRX2VvQy1ERUNaWlBOaXFsNmY4c1FaVXNaaFJoTUx1TlprVlh5NUI0Q0VveF9fOTY1cTJLUlpzY0VQMDdhM0phLVc2TG5hcEZ2X1BfVmRhRldPbXhMbzdtQWFsSFQ0UnVjQjYySDlhem1DRmgxY3l4TG5pc1ZhQVNTWjlnVnMxWGUtdl9zdThKYm05bTNxMENzWV8zY3BtLUxoVVhhS3J4LTJqcXBNY2FZcThhNjNKQXh3alIzaVAtX0x3VldjOXpNUzdyNDFwWENMTnBObVJRVGdnZlNfQ012ajZDMDNqM3Iycm5ORTRiUW5ubUVPZEZ2eWlHMFA4bVZ3TXE5eXR3UkxyQQ=="
+        - "-javaagent:/producer-dse4-pulsar-0.2.7-SNAPSHOT-all.jar=pulsarServiceUrl=pulsar://pulsar-broker.default.svc.cluster.local:6650,topicPrefix=persistent://public/default/events-,cdcWorkingDir=/var/lib/cassandra/cdc"

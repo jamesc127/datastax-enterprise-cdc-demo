@@ -9,4 +9,4 @@ RUN apt-get update && \
 WORKDIR /dsbulk/bin
 CMD /dsbulk/bin/dsbulk load -k db1 -t imdb_movies -url ./IMDb_movies.csv -h cdc-test-dc1-service.default.svc.cluster.local \
     --connector.csv.ignoreLeadingWhitespaces true --connector.csv.ignoreTrailingWhitespaces true \
-    -maxErrors -1 --executor.maxPerSecond 2000 -p $CASS_PASSWORD -u $CASS_USERNAME
+    -maxErrors -1 --executor.maxPerSecond 1000 -p $CASS_PASSWORD -u $CASS_USERNAME
