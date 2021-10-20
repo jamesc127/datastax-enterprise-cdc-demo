@@ -65,25 +65,16 @@ kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSAND
 ```
 ```shell
 kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
-"CREATE TABLE IF NOT EXISTS db1.imdb_movies (\
-imdb_title_id text PRIMARY KEY,\
-title text,\
-original_title text,\
-year int,\
-date_published date,\
-genre text,\
-duration int,\
-country text,\
-language text,\
-director text,\
-writer text,\
-production_company text,\
-actors text,\
-description text,\
-avg_vote float,\
-votes int,\
-reviews_from_users float,\
-reviews_from_critics float) WITH cdc=true;"
+"CREATE TABLE IF NOT EXISTS db1.meteorite (
+name text,
+id text PRIMARY KEY,
+nametype text,
+recclass text,
+mass float,
+fall text,
+year int,
+geolocation text,
+) WITH cdc=true;"
 ```
 ## Run Luna Streaming Config Script
 ```shell
@@ -114,7 +105,7 @@ kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') --
 ## Distroy Env
 ```bash
 kubectl delete cassandradatacenter dc1
-helm delete pulsar elasticsearch cass-operator kibana metricbeat
+helm delete pulsar elasticsearch cass-operator kibana
 kubectl delete -f nb.yaml
 kubectl delete -f dsbulk.yaml
 kubectl delete -f studio-deployment.yaml

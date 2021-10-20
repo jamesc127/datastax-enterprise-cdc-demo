@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: dsbulk-load-movie-data
+  name: dsbulk-load-meteorite-data
 spec:
   template:
     spec:
       containers:
       - name: dsbulk
-        image: docker.io/jamesc127/dsbulk-collisions-load:0.22
+        image: docker.io/jamesc127/meteorite-landings:0.3
         env:
         - name: CASS_PASSWORD
           valueFrom:
