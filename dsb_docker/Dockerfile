@@ -1,5 +1,5 @@
 FROM ubuntu:21.04
-COPY meteorite-landings-old.csv /dsbulk/bin/meteorite-landings.csv
+COPY ./meteorite-landings.csv /dsbulk/bin/meteorite-landings.csv
 COPY ./dsbulk dsbulk
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
