@@ -61,7 +61,7 @@ deploy_csc() {
     }"
 }
 
-deploy_csc_movie() {
+deploy_csc_meteorite() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
     --archive  https://github.com/jamesc127/source-pulsar/raw/main/pulsar-cassandra-source-0.2.7-SNAPSHOT.nar \
     --tenant public \
@@ -387,13 +387,14 @@ pulsar_configure
 
 deploy_csc
 
-deploy_csc_movie
+deploy_csc_meteorite
 
 deploy_es_sink
 
-deploy_es_sink_meteorite
-
 create_es_index_meteorite
-#create_es_index_movies
+
+sleep 5
+
+deploy_es_sink_meteorite
 
 test_end

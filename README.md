@@ -92,7 +92,7 @@ kubectl apply -f nb.yaml
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_doc/381691746?pretty"
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_search?pretty&size=0"
 ```
-## Load IMDB Movie Dataset
+## Load Meteorite Dataset
 ```shell
 kubectl apply -f dsbulk.yaml
 ```
