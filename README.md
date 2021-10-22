@@ -2,11 +2,12 @@
 ## Prerequsites
 - gcloud sdk
     - ensure gcloud is at the latest version
+    - [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
 - kubectl
 - helm
 - awk
 - jq
-- [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
+- make
 ## TL;DR
 - This demo takes about 30-40 minutes to deploy on GKE if you're sure your local environment is stable
 ## TODO
@@ -35,9 +36,16 @@ kubectl apply -f deploy-cassandra.yaml
 ## Elasticsearch
 ```shell
 helm install elasticsearch elastic/elasticsearch -f elastic-values-gcp.yaml
+
+TODO add make commands
+
+ELASTIC_USERNAME=$(kubectl get secret security-master-credentials -o json | jq -r '.data.username' | base64 --decode)
+ELASTIC_PASSWORD=$(kubectl get secret security-master-credentials -o json | jq -r '.data.password' | base64 --decode)
 ```
 ## Kibana
 ```shell
+TODO add make commands
+
 helm install kibana elastic/kibana
 kubectl apply -f kibana-loadbalancer.yaml
 ```
@@ -82,25 +90,13 @@ kubectl cp ./pulsar_configure.sh $(kubectl get pods | grep "pulsar-bastion-*" | 
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- chmod +x /pulsar/bin/pulsar_configure.sh
 kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- bash /pulsar/bin/pulsar_configure.sh $CASSANDRA_PASS
 ```
-## Run NoSQLBench Initial Data Load
-This k8s job will load 100 records into `table1`, which will be persisted in DSE and CDC'd to Elasticsearch.
-```shell
-kubectl apply -f nb.yaml
-```
-## Validate Elasticsearch Entries
-```shell
-kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_doc/381691746?pretty"
-kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.table1/_search?pretty&size=0"
-```
 ## Load Meteorite Dataset
 ```shell
 kubectl apply -f dsbulk.yaml
 ```
-
-TODO set up a kibana dashboard
 ## Validate Elasticsearch Entries
 ```shell
-kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.imdb_movies/_search?pretty&size=0"
+kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- curl "http://elasticsearch-master.default.svc.cluster.local:9200/db1.meteorite/_search?pretty&size=0"
 ```
 ## Distroy Env
 ```bash

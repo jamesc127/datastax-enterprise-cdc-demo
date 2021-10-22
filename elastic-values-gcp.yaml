@@ -1,17 +1,27 @@
+replicas: 1
+
 # Permit co-located instances for solitary minikube virtual machines.
 antiAffinity: "soft"
 
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
+#    discovery.type: single-node
+#    xpack.security.transport.ssl.enabled: false
+#    xpack.security.http.ssl.enabled: false
+#    xpack.security.http.ssl.client_authentication: "optional"
+
 # Shrink default JVM heap.
-esJavaOpts: "-Xmx1g -Xms1g"
+esJavaOpts: "-Xmx2g -Xms2g"
 
 # Allocate smaller chunks of memory per pod.
 resources:
   requests:
-    cpu: 1.5
-    memory: 2Gi
+    cpu: 2
+    memory: 3Gi
   limits:
-    cpu: 1.5
-    memory: 2Gi
+    cpu: 2
+    memory: 3Gi
 
 # Request smaller persistent volumes.
 volumeClaimTemplate:

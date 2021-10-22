@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: dsbulk
-        image: docker.io/jamesc127/meteorite-landings:0.5
+        image: docker.io/jamesc127/meteorite-landings:0.7
         env:
         - name: CASS_PASSWORD
           valueFrom:
