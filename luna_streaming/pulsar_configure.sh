@@ -118,11 +118,16 @@ deploy_es_sink_meteorite() {
 }
 
 create_es_index_meteorite() {
-  curl -XPUT $ELASTICSEARCH_URL/db1.meteorite/ \
+  curl -XPUT $ELASTICSEARCH_URL/db1.meteorite?include_type_name=true \
     -H 'Content-Type: application/json' \
     -d '{
             "mappings": {
+              "_doc" : {
                 "properties": {
+                  "@timestamp": {
+                    "type": "alias",
+                    "path": "finddate"
+                  },
                   "fall": {
                     "type": "text",
                     "fields": {
@@ -162,8 +167,9 @@ create_es_index_meteorite() {
                       }
                     }
                   },
-                  "year": {
-                    "type": "long"
+                  "finddate": {
+                    "type": "date",
+                    "format":"yyyy-MM-dd"
                   },
                   "geolocation": {
                     "type": "geo_point",
@@ -171,7 +177,8 @@ create_es_index_meteorite() {
                   }
                 }
               }
-            }'
+            }
+          }'
 }
 
 test_start
