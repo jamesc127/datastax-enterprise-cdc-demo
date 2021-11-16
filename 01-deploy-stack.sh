@@ -1,7 +1,7 @@
 #!/bin/bash
 
 start_deploy() {
-  echo "### Beginning GKE Deployment"
+  echo "### Beginning Stack Deployment"
   set -x
   set -o pipefail
   trap error ERR
@@ -13,7 +13,7 @@ end_deploy() {
 }
 
 error() {
-  echo "Error in deploying GKE cluster"
+  echo "Error in deploying Stack"
   exit 1
 }
 

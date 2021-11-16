@@ -41,7 +41,7 @@ pulsar_configure() {
 # The connector must be deployed when the keyspace exists
 deploy_csc() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --archive  https://github.com/jamesc127/source-pulsar/raw/main/pulsar-cassandra-source-0.2.7-SNAPSHOT.nar \
+    --source-type cassandra-source \
     --tenant public \
     --namespace default \
     --name cassandra-source-db1-table1 \
@@ -63,7 +63,7 @@ deploy_csc() {
 
 deploy_csc_meteorite() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --archive  https://github.com/jamesc127/source-pulsar/raw/main/pulsar-cassandra-source-0.2.7-SNAPSHOT.nar \
+    --source-type cassandra-source \
     --tenant public \
     --namespace default \
     --name cassandra-source-db1-meteorite \

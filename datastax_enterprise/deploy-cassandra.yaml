@@ -14,8 +14,8 @@ metadata:
 spec:
   clusterName: cdc-test
   serverType: dse
-  serverVersion: "6.8.16"
-  serverImage: "vroyer/dse4-server:latest"
+  serverVersion: "6.8.17"
+  serverImage: "jamesc127/dse4-server:6.8.17-cdc-luna"
   managementApiAuth:
     insecure: {}
   size: 3
@@ -54,4 +54,4 @@ spec:
       additional-jvm-opts:
         - "-Ddse.system_distributed_replication_dc_names=dc1"
         - "-Ddse.system_distributed_replication_per_dc=3"
-        - "-javaagent:/producer-dse4-pulsar-0.2.7-SNAPSHOT-all.jar=pulsarServiceUrl=pulsar://pulsar-broker.default.svc.cluster.local:6650,topicPrefix=persistent://public/default/events-,cdcWorkingDir=/var/lib/cassandra/cdc"
+        - "-javaagent:/agent-dse4-luna-1.0.0-all.jar=pulsarServiceUrl=pulsar://pulsar-broker.default.svc.cluster.local:6650,cdcWorkingDir=/var/lib/cassandra/cdc,pulsarBatchDelayInMs=100"
