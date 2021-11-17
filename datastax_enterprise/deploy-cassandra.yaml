@@ -15,7 +15,7 @@ spec:
   clusterName: cdc-test
   serverType: dse
   serverVersion: "6.8.17"
-  serverImage: "jamesc127/dse4-server:6.8.17-cdc-luna"
+  serverImage: "jamesc127/dse4-server:6.8.16-cdc-luna"
   managementApiAuth:
     insecure: {}
   size: 3

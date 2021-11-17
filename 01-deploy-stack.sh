@@ -56,6 +56,14 @@ configure_luna_streaming(){
   kubectl exec $(kubectl get pods | grep "pulsar-bastion-*" | awk '{print $1}') -- bash /pulsar/bin/pulsar_configure.sh $CASSANDRA_PASS
 }
 
+create_cassandra_keyspace(){
+  CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
+  until kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
+  do
+   sleep 5
+   CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
+}
+
 start_deploy
 add_helm_repos
 sleep 1
@@ -66,10 +74,7 @@ sleep 5
 deploy_luna_streaming
 kubectl wait --for=condition=available --timeout=600s --all deployments
 sleep 60
-CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
-sleep 10
-kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
-sleep 3
+create_cassandra_keyspace
 create_cassandra_table
 sleep 2
 configure_luna_streaming
