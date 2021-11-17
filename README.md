@@ -1,6 +1,6 @@
 # DataStax Enterprise & Luna Streaming CDC Demo
 ## TL;DR
-- This demo is intended to illustrate DataStax Enterprise, Change Data Capture, and Luna Streaming
+- This demo is intended to illustrate [CDC for Apache Cassandra](https://www.datastax.com/cdc-apache-cassandra)
 - End to end, this will deploy a GKE Cluster, DSE Cluster, Pulsar Cluster, Elasticsearch, and Kibana
 - Data will be automatically loaded into the DSE cluster and sent via Pulsar & CDC to an Elasticsearch index
 - This demo takes about 30-40 minutes to deploy on GKE if your local environment is stable
@@ -12,7 +12,6 @@
 - helm
 - awk
 - jq
-- make
 ## Setup
 - Clone the repo and provide execute permissions to the four shell scripts via something like `chmod +x`
 - Ensure your local machine has all of the above prerequisites 

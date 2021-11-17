@@ -20,16 +20,11 @@ authenticate_kubectl(){
   gcloud container clusters get-credentials $K8S_CLUSTER_NAME --zone $GCP_ZONE --project $PROJECT_NAME
 }
 
-test_start() {
+start_deploy() {
   echo "### Beginning GKE Deployment"
   set -x
   set -o pipefail
   trap error ERR
-}
-
-test_end() {
-  set +e
-  trap - ERR
 }
 
 error() {
@@ -37,7 +32,7 @@ error() {
   exit 1
 }
 
-test_start
+start_deploy
 create_k8s_cluster
 authenticate_kubectl
-test_end
+exit 0

@@ -15,20 +15,15 @@ PULSAR_ADMIN_AUTH="--auth-plugin org.apache.pulsar.client.impl.auth.Authenticati
 
 ELASTICSEARCH_URL="http://elasticsearch-master.default.svc.cluster.local:9200"
 
-test_start() {
-  echo "### Starting"
+start_config() {
+  echo "Starting Luna Streaming Configuration"
   set -x
   set -o pipefail
   trap error ERR
 }
 
-test_end() {
-  set +e
-  trap - ERR
-}
-
 error() {
-  echo "ERROR occurs, test FAILED"
+  echo "Error Configuring Luna Streaming"
   exit 1
 }
 
@@ -181,20 +176,12 @@ create_es_index_meteorite() {
           }'
 }
 
-test_start
-
+start_config
 pulsar_configure
-
 deploy_csc
-
 deploy_csc_meteorite
-
 deploy_es_sink
-
 create_es_index_meteorite
-
 sleep 5
-
 deploy_es_sink_meteorite
-
-test_end
+exit 0

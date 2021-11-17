@@ -14,4 +14,5 @@ error() {
 
 start_deploy
 kubectl apply -f ./dsb_docker/dsbulk.yaml
+kubectl wait --for=condition=Complete=true job/dsbulk-load-meteorite-data
 exit 0
