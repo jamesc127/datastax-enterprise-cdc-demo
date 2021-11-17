@@ -62,6 +62,7 @@ create_cassandra_keyspace(){
   do
    sleep 5
    CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
+  done
 }
 
 start_deploy
