@@ -36,11 +36,12 @@ pulsar_configure() {
 # The connector must be deployed when the keyspace exists
 deploy_csc_meteorite() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --source-type cassandra-source \
+    --name cassandra-source-db1-meteorite \
+    --archive https://github.com/jamesc127/source-pulsar/raw/main/luna-cassandra-source-1.0.0.nar \
     --tenant public \
     --namespace default \
-    --name cassandra-source-db1-meteorite \
     --destination-topic-name data-db1.meteorite \
+    --parallelism 1 \
     --source-config "{
       \"keyspace\": \"db1\",
       \"table\": \"meteorite\",
