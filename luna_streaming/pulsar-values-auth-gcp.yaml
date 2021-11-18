@@ -92,7 +92,7 @@ pulsarAdminConsole:
   createUserSecret:
     enabled: true
     user: 'admin'
-    password: 'e9JYtk83*4#PM8'
+    password: 'admin'
 
 kube-prometheus-stack:
   enabled: true
@@ -100,4 +100,4 @@ kube-prometheus-stack:
     enabled: true
   grafana:
     enabled: true
-    adminPassword: e9JYtk83*4#PM8
+    adminPassword: admin

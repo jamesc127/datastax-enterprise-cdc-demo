@@ -34,28 +34,6 @@ pulsar_configure() {
 }
 
 # The connector must be deployed when the keyspace exists
-deploy_csc() {
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
-    --source-type cassandra-source \
-    --tenant public \
-    --namespace default \
-    --name cassandra-source-db1-table1 \
-    --destination-topic-name data-db1.table1 \
-    --source-config "{
-      \"keyspace\": \"db1\",
-      \"table\": \"table1\",
-      \"events.topic\": \"persistent://public/default/events-db1.table1\",
-      \"events.subscription.name\": \"sub1\",
-      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
-      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
-      \"contactPoints\": \"$CASSANDRA_SERVICE\",
-      \"loadBalancing.localDc\": \"$CASSANDRA_DC\",
-      \"auth.provider\": \"PLAIN\",
-      \"auth.username\": \"$USERNAME\",
-      \"auth.password\": \"$PASSWORD\"
-    }"
-}
-
 deploy_csc_meteorite() {
   $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP source create \
     --source-type cassandra-source \
@@ -68,30 +46,11 @@ deploy_csc_meteorite() {
       \"table\": \"meteorite\",
       \"events.topic\": \"persistent://public/default/events-db1.meteorite\",
       \"events.subscription.name\": \"meteorite\",
-      \"key.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
-      \"value.converter\": \"com.datastax.oss.pulsar.source.converters.NativeAvroConverter\",
       \"contactPoints\": \"$CASSANDRA_SERVICE\",
       \"loadBalancing.localDc\": \"$CASSANDRA_DC\",
       \"auth.provider\": \"PLAIN\",
       \"auth.username\": \"$USERNAME\",
       \"auth.password\": \"$PASSWORD\"
-    }"
-}
-
-deploy_es_sink() {
-  $PULSAR_ADMIN --admin-url $PULSAR_BROKER_HTTP sink create \
-    --sink-type elastic_search \
-    --tenant public \
-    --namespace default \
-    --name elasticsearch-sink-db1-table1 \
-    --inputs persistent://public/default/data-db1.table1 \
-    --subs-position Earliest \
-    --sink-config "{
-      \"elasticSearchUrl\":\"$ELASTICSEARCH_URL\",
-      \"indexName\":\"db1.table1\",
-      \"keyIgnore\":\"false\",
-      \"nullValueAction\":\"DELETE\",
-      \"schemaEnable\":\"true\"
     }"
 }
 
@@ -178,9 +137,7 @@ create_es_index_meteorite() {
 
 start_config
 pulsar_configure
-deploy_csc
 deploy_csc_meteorite
-deploy_es_sink
 create_es_index_meteorite
 sleep 5
 deploy_es_sink_meteorite
