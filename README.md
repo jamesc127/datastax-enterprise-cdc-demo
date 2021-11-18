@@ -36,6 +36,7 @@ You'll need to run a few `kubectl` commands to get the DSE password.
 ```shell
 Host = cdc-test-dc1-service.default.svc.cluster.local
 User Name = cdc-test-superuser
+# Run the following in your local terminal to get the Cassandra Super User Password
 CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
 echo $CASSANDRA_PASS
 ```
