@@ -1,14 +1,14 @@
 #!/bin/bash
 
 start_deploy() {
-  echo "### Beginning Cassandra Dataset deployment"
+  echo "### Beginning DSE Dataset deployment"
   set -x
   set -o pipefail
   trap error ERR
 }
 
 error() {
-  echo "Error in deploying Cassandra Dataset"
+  echo "Error in deploying DSE Dataset"
   exit 1
 }
 

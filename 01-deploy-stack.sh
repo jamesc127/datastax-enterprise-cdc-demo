@@ -36,7 +36,7 @@ deploy_luna_streaming(){
   helm install pulsar -f ./luna_streaming/pulsar-values-auth-gcp.yaml datastax-pulsar/pulsar
 }
 
-create_cassandra_table(){
+create_cassandra_table_meteorite(){
   kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
   "CREATE TABLE IF NOT EXISTS db1.meteorite (
   name text,
@@ -47,6 +47,19 @@ create_cassandra_table(){
   fall text,
   finddate text,
   geolocation text,
+  ) WITH cdc=true;"
+}
+
+create_cassandra_table_starbucks(){
+  kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
+  "CREATE TABLE IF NOT EXISTS db1.starbucks (
+  store_num int PRIMARY KEY,
+  lon text,
+  lat text,
+  geolocation text,
+  description text,
+  address text,
+  locdate text,
   ) WITH cdc=true;"
 }
 
@@ -61,8 +74,8 @@ create_cassandra_keyspace(){
   until kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e "CREATE KEYSPACE IF NOT EXISTS db1 WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1':3};"
   do
    CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
-   echo $CASSANDRA_PASS
-   sleep 2
+   echo "Waiting for all DataStax Enterprise nodes to become available"
+   sleep 10
   done
 }
 
@@ -77,7 +90,7 @@ deploy_luna_streaming
 kubectl wait --for=condition=available --timeout=600s --all deployments
 sleep 60
 create_cassandra_keyspace
-create_cassandra_table
+create_cassandra_table_meteorite
 sleep 2
 configure_luna_streaming
 exit 0
