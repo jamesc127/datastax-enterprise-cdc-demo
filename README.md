@@ -1,9 +1,10 @@
 # DataStax Enterprise & Luna Streaming CDC Demo
 ## TL;DR
 - This demo is intended to demonstrate [CDC for Apache Cassandra](https://www.datastax.com/cdc-apache-cassandra)
-- End to end, this will deploy a GKE Cluster, DSE Cluster, Pulsar Cluster, Elasticsearch, and Kibana
+- End to end, this will deploy a GKE Cluster, DSE Cluster, Pulsar Cluster, Grafana, Elasticsearch, and Kibana
 - Data will be automatically loaded into the DSE cluster and sent via Pulsar & CDC to an Elasticsearch index
-- This demo takes about 30-40 minutes to deploy on GKE if your local environment is stable
+- This demo takes about 30-40 minutes to deploy on GKE if your local environment is stable, 
+- It's recommended to deploy ahead of time and just perform the data load while showing the various UI elements to the Customer
 ## Prerequsites
 - GCP account 
 - Permissions to a GCP Project where GKE clusters can be deployed (e.g. `gcp-data-architects-dev`)
@@ -28,7 +29,10 @@
   - Grafana
   - Pulsar Admin Console
   - DSE Studio
-- Use the UI's to demonstrate data movement from DSE to Elasticsearch
+- Use the UI's to demonstrate data movement from DSE to Elasticsearch Index (`db1.meteorite`)
+- Create a Kibana Index Pattern from the ES Index `db1.meteorite`
+  - Ensure you use the field `finddate` as the timestamp field
+- In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the Index Pattern you created
 ## DSE Studio
 You will need to create a DS Studio notebook and new connection to visualize data in your DSE cluster. 
 Use the following for connection details. 
@@ -45,3 +49,5 @@ echo $CASSANDRA_PASS
   - Your GCP project name (where you have rights to deploy a GKE cluster)
   - The name you gave your GKE cluster
   - The GCP region you deployed your cluster
+### Known Issues
+- On two occations the `pulsar-bookkeeper`pod has become stuck initializing with 0 restarts. RCA ongoing.
