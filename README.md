@@ -1,13 +1,14 @@
 # DataStax Enterprise & Luna Streaming CDC Demo
 ## TL;DR
-- This demo is intended to demonstrate [CDC for Apache Cassandra](https://www.datastax.com/cdc-apache-cassandra)
+- This demo is intended to illustrate [CDC for Apache Cassandra](https://www.datastax.com/cdc-apache-cassandra) and its ability to publish changes in C* to a backend or downstream system
 - End to end, this will deploy a GKE Cluster, DSE Cluster, Pulsar Cluster, Grafana, Elasticsearch, and Kibana
 - Data will be automatically loaded into the DSE cluster and sent via Pulsar & CDC to an Elasticsearch index
-- This demo takes about 30-40 minutes to deploy on GKE if your local environment is stable, 
-- It's recommended to deploy ahead of time and just perform the data load while showing the various UI elements to the Customer
+- This demo takes about 30-40 minutes to deploy on GKE if your local environment is stable
+- It's recommended to deploy ahead of time and limit the customer demo to the data load while displaying the various UI elements
+- Should the audience be more interested in the deployment of the solution, the repo is public and can be shared
 ## Prerequsites
 - GCP account 
-- Permissions to a GCP Project where GKE clusters can be deployed (e.g. `gcp-data-architects-dev`)
+- Permissions to a GCP Project where GKE clusters can be deployed
 - gcloud sdk
     - ensure gcloud is at the latest version
     - [Configure Cluster Access for kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
@@ -34,12 +35,8 @@
   - Ensure you use the field `finddate` as the timestamp field
 - In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the Index Pattern you created
 ## DSE Studio
-You will need to create a DS Studio notebook and new connection to visualize data in your DSE cluster. 
-Use the following for connection details. 
-You'll need to run a few `kubectl` commands to get the DSE password.
+You will need to [import the included DSE Studio notebook](https://docs.datastax.com/en/studio/6.8/studio/importNotebook.html) named `dse-studio-notebook.tar` and modify the connection details with your cluster's password.
 ```shell
-Host = cdc-test-dc1-service.default.svc.cluster.local
-User Name = cdc-test-superuser
 # Run the following in your local terminal to get the Cassandra Super User Password
 CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
 echo $CASSANDRA_PASS
@@ -50,4 +47,4 @@ echo $CASSANDRA_PASS
   - The name you gave your GKE cluster
   - The GCP region you deployed your cluster
 ### Known Issues
-- On two occations the `pulsar-bookkeeper`pod has become stuck initializing with 0 restarts. RCA ongoing.
+- On two occasions the `pulsar-bookkeeper`pod has become stuck initializing with 0 restarts. RCA ongoing.
