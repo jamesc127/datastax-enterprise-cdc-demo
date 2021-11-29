@@ -33,7 +33,7 @@
 - Use the UI's to demonstrate data movement from DSE to Elasticsearch Index (`db1.meteorite`)
 - Create a Kibana Index Pattern from the ES Index `db1.meteorite`
   - Ensure you use the field `finddate` as the timestamp field
-- In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the Index Pattern you created
+- In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the visualization type you would like to display
 ## DSE Studio
 You will need to [import the included DSE Studio notebook](https://docs.datastax.com/en/studio/6.8/studio/importNotebook.html) named `dse-studio-notebook.tar` and modify the connection details with your cluster's password.
 ```shell
