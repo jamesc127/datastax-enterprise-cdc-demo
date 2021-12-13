@@ -35,9 +35,14 @@
   - Ensure you use the field `finddate` as the timestamp field
 - In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the visualization type you would like to display
 ## DSE Studio
-You will need to [import the included DSE Studio notebook](https://docs.datastax.com/en/studio/6.8/studio/importNotebook.html) named `dse-studio-notebook.tar` and modify the connection details with your cluster's password.
+[Import the included DSE Studio notebook](https://docs.datastax.com/en/studio/6.8/studio/importNotebook.html) named `dse-studio-notebook.tar` and modify the connection details.
+- Give the connection whatever Name you would like
+- For the Host use `cdc-test-dc1-service.default.svc.cluster.local`
+- Leave the Port at `9042`
+- The Username is `cdc-test-superuser`
+
+Run the following to retrieve the `cdc-test-superuser` password and copy/paste it into the Password field.
 ```shell
-# Run the following in your local terminal to get the Cassandra Super User Password
 CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
 echo $CASSANDRA_PASS
 ```
