@@ -34,6 +34,7 @@
 - Create a Kibana Index Pattern from the ES Index `db1.meteorite`
   - Ensure you use the field `finddate` as the timestamp field
 - In the Kibana UI Menu, select `Analytics` > `Maps` > `Add Layer` > `Elasticsearch` and select the visualization type you would like to display
+- Be sure to set the time range in the top right corner of the map to something like `1500 years ago`
 ## DSE Studio
 [Import the included DSE Studio notebook](https://docs.datastax.com/en/studio/6.8/studio/importNotebook.html) named `dse-studio-notebook.tar` and modify the connection details.
 - Give the connection whatever Name you would like
@@ -43,8 +44,7 @@
 
 Run the following to retrieve the `cdc-test-superuser` password and copy/paste it into the Password field.
 ```shell
-CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode)
-echo $CASSANDRA_PASS
+CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.password' | base64 --decode) && echo $CASSANDRA_PASS
 ```
 ## Tear Down
 - Run script 03 with the same three arguments to tear down your GKE cluster
