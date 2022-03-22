@@ -52,4 +52,5 @@ CASSANDRA_PASS=$(kubectl get secret cdc-test-superuser -o json | jq -r '.data.pa
   - The name you gave your GKE cluster
   - The GCP region you deployed your cluster
 ### Known Issues
+- Some issues have been reported where only about 1/2 of the records end up in Elastic. Issue is believed to be corrected.
 - On two occasions the `pulsar-bookkeeper`pod has become stuck initializing with 0 restarts. RCA ongoing.
