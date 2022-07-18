@@ -33,7 +33,7 @@ deploy_elk(){
 }
 
 deploy_luna_streaming(){
-  helm install pulsar -f ./luna_streaming/pulsar-values-auth-gcp.yaml datastax-pulsar/pulsar
+  helm install pulsar -f ./luna_streaming/pulsar-values-auth-gcp.yaml datastax-pulsar/pulsar --version "2"
 }
 
 create_cassandra_table_meteorite(){
@@ -47,19 +47,6 @@ create_cassandra_table_meteorite(){
   fall text,
   finddate text,
   geolocation text,
-  ) WITH cdc=true;"
-}
-
-create_cassandra_table_starbucks(){
-  kubectl exec cdc-test-dc1-rack1-sts-0 -- cqlsh -u cdc-test-superuser -p $CASSANDRA_PASS -e \
-  "CREATE TABLE IF NOT EXISTS db1.starbucks (
-  store_num int PRIMARY KEY,
-  lon text,
-  lat text,
-  geolocation text,
-  description text,
-  address text,
-  locdate text,
   ) WITH cdc=true;"
 }
 
